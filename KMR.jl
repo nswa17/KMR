@@ -59,17 +59,32 @@ function main_sim(xs, M, N, T, epsilon; simul = false)
     end
     return Xs
 end
-"""
+
 type KMR
     xs
     M
     N
     T
     epsilon
+    Xs
 end
 
-function simulate!(kmr::KMR)
-"""
+KMR(M, N::Int, epsilon) = KMR(ones(Int, N), M, N, 0, epsilon, Array(Int, T))
+
+function simulate!(kmr::KMR, T; init = 0)
+    kmr.xs[1:init] = 2
+    kmr.Xs = main_sim(xs, M, N, T, epsilon)
+end
+
+function plot_sample_path(kmr)
+    plot(kmr.Xs)
+end
+
+function plot_empirical_dist(kmr)
+    fig, ax = subplots()
+    ax[:hist](kmr.Xs)
+end
+
 M = Array(Int, (2, 2, 2))
 M[1, 1, :] = [4, 4]
 M[1, 2, :] = [0, 3]
@@ -78,10 +93,16 @@ M[2, 2, :] = [2, 2]
 
 N = 20
 T = 1000
-epsilon = 0.05
+epsilon = 0.06
 
-for i in 1:10
+loop = 1
+for i in 1:loop
     xs = ones(Int, N)#######自由
     Xs = main_sim(xs, M, N, T, epsilon)
     plot(Xs)
 end
+
+kmr = KMR(M, N, epsilon)
+simulate!(kmr, T)
+plot_sample_path(kmr)
+plot_empirical_dist(kmr)
