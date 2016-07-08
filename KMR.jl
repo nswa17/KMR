@@ -1,3 +1,5 @@
+using PyPlot
+
 function get_X(xs)
     return sum(filter(x->x==2, xs))
 end
@@ -57,18 +59,29 @@ function main_sim(xs, M, N, T, epsilon; simul = false)
     end
     return Xs
 end
+"""
+type KMR
+    xs
+    M
+    N
+    T
+    epsilon
+end
 
+function simulate!(kmr::KMR)
+"""
 M = Array(Int, (2, 2, 2))
 M[1, 1, :] = [4, 4]
 M[1, 2, :] = [0, 3]
 M[2, 1, :] = [3, 0]
 M[2, 2, :] = [2, 2]
 
-N = 50
-T = 100
+N = 20
+T = 1000
 epsilon = 0.05
 
-xs = ones(Int, N)#######自由
-
-Xs = main_sim(xs, M, N, T, epsilon)
-println(Xs)
+for i in 1:10
+    xs = ones(Int, N)#######自由
+    Xs = main_sim(xs, M, N, T, epsilon)
+    plot(Xs)
+end
