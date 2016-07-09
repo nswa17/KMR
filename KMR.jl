@@ -27,7 +27,11 @@ function sequential_revisions!(xs, N, M, epsilon)
     i = rand(collect(1:length(xs)))
     r = best_response(xs, i, N, M)
     if epsilon > rand()#突然変異
-        xs[i] = 3 - r
+        if 1/2 > rand()
+            xs[i] = 3 - r
+        else
+            xs[i] = r
+        end
     else#
         xs[i] = r
     end
@@ -38,7 +42,11 @@ function simultaneous_revisions!(xs, N, M, epsilon)
     for i in 1:length(xs)
         r = best_response(xs, i, N, M)
         if epsilon > rand()#突然変異
-            new_xs[i] = 3 - r
+            if 1/2 > rand()
+                new_xs[i] = 3 - r
+            else
+                new_xs[i] = r
+            end
         else#
             new_xs[i] = r
         end
@@ -73,7 +81,7 @@ KMR(M, N::Int, epsilon) = KMR(ones(Int, N), M, N, 0, epsilon, Array(Int, T))
 
 function simulate!(kmr::KMR, T; init = 0)
     kmr.xs[1:init] = 2
-    kmr.Xs = main_sim(xs, M, N, T, epsilon)
+    kmr.Xs = main_sim(kmr.xs, M, N, T, epsilon)
 end
 
 function plot_sample_path(kmr)
@@ -94,14 +102,14 @@ M[2, 2, :] = [2, 2]
 N = 20
 T = 1000
 epsilon = 0.06
-
-loop = 1
+"""
+loop = 10
 for i in 1:loop
     xs = ones(Int, N)#######自由
     Xs = main_sim(xs, M, N, T, epsilon)
     plot(Xs)
 end
-
+"""
 kmr = KMR(M, N, epsilon)
 simulate!(kmr, T)
 plot_sample_path(kmr)
