@@ -11,7 +11,7 @@ function get_simultaneous_P(epsilon, N, p)
             P[i, 1:end] = [binomial(N, j)*(1/2)^N for j in 0:N]
             P[i, end] = 1-sum(P[i, 1:end-1])
         else
-            P[i, 1:end] = [binomial(N, j)*(epsilon)^(N-j)*(epsilon)^j for j in 0:N]
+            P[i, 1:end] = [binomial(N, j)*(epsilon)^(N-j)*(1-epsilon)^j for j in 0:N]
             P[i, end] = 1-sum(P[i, 1:end-1])
         end
     end
@@ -75,7 +75,7 @@ plot_sample_path(kmr::KMR) = plot(kmr.Xs)#, label="epsilon = $kmr.epsion")
 function plot_stationary_dist(kmr::KMR)
     fig, ax = subplots()
     #ax[:hist](mc_compute_stationary(kmr.mc))
-    ax[:bar](collect(1:kmr.N), mc_compute_stationary(kmr.mc))
+    ax[:bar](collect(0:kmr.N), mc_compute_stationary(kmr.mc))
 end
 
 function plot_empirical_dist(kmr::KMR)
@@ -87,6 +87,7 @@ function plot_sample_path(kmr::KMR)
     plot(kmr.Xs)
 end
 
+"""
 M = Array(Int, (2, 2, 2))
 M[1, 1, :] = [4, 4]
 M[1, 2, :] = [0, 3]
@@ -103,7 +104,6 @@ simulate!(kmr, T)
 plot_empirical_dist(kmr)
 #plot_sample_path(kmr)
 
-"""
 for e in linspace(1/2, 0, 7)
     kmr = KMR(M, N, e)
     simulate!(kmr, T)
